@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Lernhub – Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --background: #f5f6f8;
+            --surface: #ffffff;
+            --surface-hover: #f0f2f5;
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --border: #d9dde5;
+            --primary: #315efb;
+            --primary-hover: #244bd1;
+            --success: #2e9b68;
+            --danger: #d94b4b;
+            --disabled: #b8bec8;
+            --shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        body.theme-green {
+            --primary: #2d8a63;
+            --primary-hover: #216b4c;
+        }
+
+        body.theme-purple {
+            --primary: #7654c7;
+            --primary-hover: #5c3da8;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            height: 70px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 28px;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left,
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-right: 20px;
+        }
+
+        .header-button {
+            height: 42px;
+            padding: 0 17px;
+
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+
+            border-radius: 9px;
+            cursor: pointer;
+
+            font-size: 14px;
+        }
+
+        .header-button:hover {
+            background: var(--surface-hover);
+        }
+
+        /* Theme button */
+
+        #themeButton {
+            width: 42px;
+            height: 42px;
+            padding: 0;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #315efb 0%,
+                    #315efb 33%,
+                    #2d8a63 33%,
+                    #2d8a63 66%,
+                    #7654c7 66%,
+                    #7654c7 100%
+                );
+
+            border: 3px solid var(--surface);
+
+            box-shadow: 0 0 0 1px var(--border);
+
+            cursor: pointer;
+        }
+
+        /* Hamburger */
+
+        #menuButton {
+            width: 44px;
+            height: 42px;
+            padding: 0;
+
+            border: 1px solid var(--border);
+            border-radius: 9px;
+
+            background: var(--surface);
+            cursor: pointer;
+
+            font-size: 22px;
+        }
+
+        /* =========================
+           MENU
+        ========================= */
+
+        #sideMenu {
+            position: fixed;
+            top: 70px;
+            right: 0;
+
+            width: 280px;
+            min-height: calc(100vh - 70px);
+
+            background: var(--surface);
+            border-left: 1px solid var(--border);
+
+            box-shadow: var(--shadow);
+
+            padding: 25px;
+
+            transform: translateX(100%);
+            transition: transform 0.2s ease;
+
+            z-index: 90;
+        }
+
+        #sideMenu.open {
+            transform: translateX(0);
+        }
+
+        #sideMenu h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .menu-item {
+            width: 100%;
+            text-align: left;
+
+            border: none;
+            background: transparent;
+
+            padding: 13px 10px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+        }
+
+        .menu-item:hover {
+            background: var(--surface-hover);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            width: min(1100px, calc(100% - 40px));
+            margin: 40px auto 70px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .welcome p {
+            color: var(--text-light);
+        }
+
+        /* =========================
+           LEARNING CARD
+        ========================= */
+
+        .learning-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            padding: 30px;
+
+            box-shadow: var(--shadow);
+        }
+
+        .learning-card h2 {
+            font-size: 21px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            height: 48px;
+
+            padding: 0 14px;
+
+            border: 1px solid var(--border);
+            border-radius: 8px;
+
+            background: var(--surface);
+            color: var(--text);
+
+            font-size: 15px;
+        }
+
+        select:disabled {
+            background: var(--background);
+            color: var(--disabled);
+            cursor: not-allowed;
+        }
+
+        select.invalid {
+            border: 2px solid var(--danger);
+        }
+
+        .error-message {
+            display: none;
+
+            margin-top: 7px;
+
+            color: var(--danger);
+            font-size: 13px;
+        }
+
+        .error-message.visible {
+            display: block;
+        }
+
+        /* =========================
+           QUIZ TYPES
+        ========================= */
+
+        .quiz-types {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .quiz-type {
+            min-height: 55px;
+
+            border: 1px solid var(--border);
+            border-radius: 9px;
+
+            background: var(--surface);
+
+            cursor: pointer;
+
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .quiz-type:hover:not(:disabled) {
+            border-color: var(--primary);
+        }
+
+        .quiz-type.selected {
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            background: rgba(49, 94, 251, 0.05);
+        }
+
+        .quiz-type:disabled {
+            color: var(--disabled);
+            background: var(--background);
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           START BUTTON
+        ========================= */
+
+        .start-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        #startQuiz {
+            min-width: 220px;
+            height: 52px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: var(--primary);
+            color: white;
+
+            font-size: 16px;
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+        #startQuiz:hover {
+            background: var(--primary-hover);
+        }
+
+        /* =========================
+           STATISTICS
+        ========================= */
+
+        .statistics {
+            margin-top: 30px;
+        }
+
+        .statistics h2 {
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .subject-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .subject {
+            width: 100%;
+
+            background: var(--surface);
+
+            border: 1px solid var(--border);
+            border-radius: 9px;
+
+            padding: 16px 18px;
+
+            cursor: pointer;
+        }
+
+        .subject:hover {
+            background: var(--surface-hover);
+        }
+
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 9px;
+        }
+
+        .subject-name {
+            font-weight: 600;
+        }
+
+        .percentage {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .progress {
+            height: 8px;
+
+            background: #e3e6eb;
+
+            border-radius: 99px;
+
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+
+            background: var(--primary);
+
+            border-radius: 99px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 0 15px;
+            }
+
+            .logo {
+                margin-right: 5px;
+            }
+
+            .statistics-button {
+                display: none;
+            }
+
+            main {
+                width: calc(100% - 24px);
+                margin-top: 25px;
+            }
+
+            .learning-card {
+                padding: 20px;
+            }
+
+            .quiz-types {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="header-left">
+
+        <div class="logo">
+            LERNHUB
+        </div>
+
+        <button
+            class="header-button statistics-button"
+            id="statisticsButton">
+            Statistik
+        </button>
+
+        <button
+            id="themeButton"
+            title="Theme wechseln"
+            aria-label="Theme wechseln">
+        </button>
+
+    </div>
+
+    <div class="header-right">
+
+        <button
+            id="menuButton"
+            aria-label="Menü öffnen">
+            ☰
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     BURGERMENÜ
+========================= -->
+
+<nav id="sideMenu">
+
+    <h2>Menü</h2>
+
+    <button class="menu-item" id="dashboardMenu">
+        Dashboard
+    </button>
+
+    <button class="menu-item" id="statisticsMenu">
+        Statistik
+    </button>
+
+    <button class="menu-item">
+        Profil
+    </button>
+
+    <button class="menu-item">
+        Einstellungen
+    </button>
+
+    <button class="menu-item">
+        AGB
+    </button>
+
+    <button class="menu-item">
+        Datenschutz
+    </button>
+
+    <button class="menu-item" id="logoutButton">
+        Logout
+    </button>
+
+</nav>
+
+
+<!-- =========================
+     HAUPTINHALT
+========================= -->
+
+<main>
+
+    <section class="welcome">
+
+        <h1 id="welcomeTitle">
+            Willkommen zurück!
+        </h1>
+
+        <p id="welcomeText">
+            Wähle aus, was du heute lernen möchtest.
+        </p>
+
+    </section>
+
+
+    <!-- =========================
+         LERN-AUSWAHL
+    ========================= -->
+
+    <section class="learning-card">
+
+        <h2>Lernen</h2>
+
+        <!-- SEMESTER -->
+<div class="filter-group">
+    <label for="semester">Semester</label>
+    <select id="semester">
+        <option value="">Semester auswählen</option>
+        <option value="1">1. Semester</option>
+        <option value="2">2. Semester</option>
+        <option value="extra">Extra</option>
+    </select>
+</div>
+
+
+        <!-- Fach -->
+
+        <div class="form-group">
+
+            <label for="subject">
+                Fach
+            </label>
+
+            <select id="subject">
+
+                <option value="">
+                    Fach auswählen
+                </option>
+
+            </select>
+
+            <div
+                id="subjectError"
+                class="error-message">
+                Bitte wähle zuerst ein Fach aus.
+            </div>
+
+        </div>
+
+
+        <!-- Thema -->
+
+        <div class="form-group">
+
+            <label for="topic">
+                Thema
+            </label>
+
+            <select
+                id="topic"
+                disabled>
+
+                <option value="">
+                    Erst Fach auswählen
+                </option>
+
+            </select>
+
+            <div
+                id="topicError"
+                class="error-message">
+                Bitte wähle zuerst ein Thema aus.
+            </div>
+
+        </div>
+
+
+        <!-- Quiz-Thema -->
+
+        <div class="form-group">
+
+            <label for="quizTopic">
+                Quiz-Thema
+            </label>
+
+            <select
+                id="quizTopic"
+                disabled>
+
+                <option value="">
+                    Erst Thema auswählen
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <!-- Quizart -->
+
+        <div class="form-group">
+
+            <label>
+                Quizart
+            </label>
+
+            <div class="quiz-types">
+
+                <button
+                    class="quiz-type"
+                    data-type="multiple-choice">
+                    Multiple Choice
+                </button>
+
+                <button
+                    class="quiz-type"
+                    data-type="flashcards">
+                    Flashcards
+                </button>
+
+                <button
+                    class="quiz-type"
+                    data-type="input">
+                    Benutzer-Eingabe
+                </button>
+
+            </div>
+
+            <div
+                id="quizTypeError"
+                class="error-message">
+                Bitte wähle eine Quizart aus.
+            </div>
+
+        </div>
+
+
+        <!-- Start -->
+
+        <div class="start-container">
+
+            <button id="startQuiz">
+                QUIZ STARTEN
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FÄCHER / STATISTIK
+    ========================= -->
+
+    <section class="statistics">
+
+        <h2>
+            Dein Lernfortschritt
+        </h2>
+
+        <div
+            id="subjectList"
+            class="subject-list">
+
+            <!-- Wird durch JavaScript gefüllt -->
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<script type="module">
+
+    /*
+     * =====================================================
+     * LERNHUB DASHBOARD
+     * =====================================================
+     *
+     * Diese Version benutzt zunächst Testdaten.
+     *
+     * Die Firebase-Anbindung kann anschließend direkt
+     * an deine bestehende Authentifizierung angeschlossen
+     * werden.
+     */
+
+
+    /* =====================================================
+       TESTDATEN
+    ===================================================== */
+
+    const learningData = {
+
+        "Java": {
+
+            "Schleifen": [
+                "for-Schleifen",
+                "while-Schleifen",
+                "do-while-Schleifen"
+            ],
+
+            "Arrays": [
+                "Arrays Grundlagen",
+                "Arrays bearbeiten"
+            ],
+
+            "Bedingungen": [
+                "if / else",
+                "switch"
+            ]
+
+        },
+
+        "Datenbanken": {
+
+            "SQL": [
+                "SELECT",
+                "WHERE",
+                "JOIN"
+            ],
+
+            "MariaDB": [
+                "Tabellen",
+                "Datentypen"
+            ]
+
+        },
+
+        "Webentwicklung": {
+
+            "HTML": [
+                "Elemente",
+                "Formulare"
+            ],
+
+            "CSS": [
+                "Selektoren",
+                "Layout"
+            ]
+
+        }
+
+    };
+
+
+    /* =====================================================
+       ELEMENTE
+    ===================================================== */
+
+    const subjectSelect =
+        document.getElementById("subject");
+
+    const topicSelect =
+        document.getElementById("topic");
+
+    const quizTopicSelect =
+        document.getElementById("quizTopic");
+
+    const startQuiz =
+        document.getElementById("startQuiz");
+
+    const themeButton =
+        document.getElementById("themeButton");
+
+    const menuButton =
+        document.getElementById("menuButton");
+
+    const sideMenu =
+        document.getElementById("sideMenu");
+
+    const quizTypeButtons =
+        document.querySelectorAll(".quiz-type");
+
+
+    let selectedQuizType = null;
+
+
+    /* =====================================================
+       FÄCHER LADEN
+    ===================================================== */
+
+    Object.keys(learningData).forEach(subject => {
+
+        const option =
+            document.createElement("option");
+
+        option.value = subject;
+        option.textContent = subject;
+
+        subjectSelect.appendChild(option);
+
+    });
+
+
+    /* =====================================================
+       FACH AUSGEWÄHLT
+    ===================================================== */
+
+    subjectSelect.addEventListener("change", () => {
+
+        const subject =
+            subjectSelect.value;
+
+
+        /* Thema zurücksetzen */
+
+        topicSelect.innerHTML =
+            '<option value="">Thema auswählen</option>';
+
+        quizTopicSelect.innerHTML =
+            '<option value="">Erst Thema auswählen</option>';
+
+
+        quizTopicSelect.disabled = true;
+
+
+        if (!subject) {
+
+            topicSelect.disabled = true;
+
+            return;
+
+        }
+
+
+        topicSelect.disabled = false;
+
+
+        Object.keys(
+            learningData[subject]
+        ).forEach(topic => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = topic;
+            option.textContent = topic;
+
+            topicSelect.appendChild(option);
+
+        });
+
+    });
+
+
+    /* =====================================================
+       THEMA AUSGEWÄHLT
+    ===================================================== */
+
+    topicSelect.addEventListener("change", () => {
+
+        const subject =
+            subjectSelect.value;
+
+        const topic =
+            topicSelect.value;
+
+
+        quizTopicSelect.innerHTML =
+            '<option value="">Quiz-Thema auswählen</option>';
+
+
+        if (!topic) {
+
+            quizTopicSelect.disabled = true;
+
+            return;
+
+        }
+
+
+        quizTopicSelect.disabled = false;
+
+
+        const quizTopics =
+            learningData[subject][topic];
+
+
+        quizTopics.forEach(quizTopic => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = quizTopic;
+            option.textContent = quizTopic;
+
+            quizTopicSelect.appendChild(option);
+
+        });
+
+    });
+
+
+    /* =====================================================
+       QUIZART
+    ===================================================== */
+
+    quizTypeButtons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            quizTypeButtons.forEach(btn => {
+
+                btn.classList.remove("selected");
+
+            });
+
+
+            button.classList.add("selected");
+
+            selectedQuizType =
+                button.dataset.type;
+
+        });
+
+    });
+
+
+    /* =====================================================
+       QUIZ STARTEN
+    ===================================================== */
+
+    startQuiz.addEventListener("click", () => {
+
+        let valid = true;
+
+
+        /* Fach */
+
+        if (!subjectSelect.value) {
+
+            subjectSelect.classList.add("invalid");
+
+            document
+                .getElementById("subjectError")
+                .classList.add("visible");
+
+            valid = false;
+
+        } else {
+
+            subjectSelect.classList.remove("invalid");
+
+            document
+                .getElementById("subjectError")
+                .classList.remove("visible");
+
+        }
+
+
+        /* Thema */
+
+        if (!topicSelect.value) {
+
+            topicSelect.classList.add("invalid");
+
+            document
+                .getElementById("topicError")
+                .classList.add("visible");
+
+            valid = false;
+
+        } else {
+
+            topicSelect.classList.remove("invalid");
+
+            document
+                .getElementById("topicError")
+                .classList.remove("visible");
+
+        }
+
+
+        /* Quizart */
+
+        if (!selectedQuizType) {
+
+            document
+                .getElementById("quizTypeError")
+                .classList.add("visible");
+
+            valid = false;
+
+        } else {
+
+            document
+                .getElementById("quizTypeError")
+                .classList.remove("visible");
+
+        }
+
+
+        if (!valid) {
+
+            return;
+
+        }
+
+
+        /*
+         * Vorläufig speichern wir die Auswahl.
+         *
+         * Die eigentliche Quizseite kommt im nächsten Schritt.
+         */
+
+        const quizSelection = {
+
+            subject: subjectSelect.value,
+
+            topic: topicSelect.value,
+
+            quizTopic: quizTopicSelect.value,
+
+            quizType: selectedQuizType
+
+        };
+
+
+        sessionStorage.setItem(
+            "quizSelection",
+            JSON.stringify(quizSelection)
+        );
+
+
+        /*
+         * Vorläufige Meldung.
+         *
+         * Sobald quiz.html existiert, ersetzen wir
+         * diesen Teil durch:
+         *
+         * window.location.href = "quiz.html";
+         */
+
+        alert(
+            "Auswahl gespeichert.\n\n" +
+            "Fach: " + quizSelection.subject + "\n" +
+            "Thema: " + quizSelection.topic + "\n" +
+            "Quiz-Thema: " + quizSelection.quizTopic + "\n" +
+            "Quizart: " + quizSelection.quizType
+        );
+
+    });
+
+
+    /* =====================================================
+       THEME
+    ===================================================== */
+
+    const themes = [
+        "",
+        "theme-green",
+        "theme-purple"
+    ];
+
+    let currentTheme = 0;
+
+
+    themeButton.addEventListener("click", () => {
+
+        document.body.classList.remove(
+            "theme-green",
+            "theme-purple"
+        );
+
+
+        currentTheme++;
+
+        if (currentTheme >= themes.length) {
+
+            currentTheme = 0;
+
+        }
+
+
+        const theme =
+            themes[currentTheme];
+
+
+        if (theme) {
+
+            document.body.classList.add(theme);
+
+        }
+
+
+        localStorage.setItem(
+            "lernhubTheme",
+            theme
+        );
+
+    });
+
+
+    /* gespeichertes Theme */
+
+    const savedTheme =
+        localStorage.getItem("lernhubTheme");
+
+
+    if (savedTheme) {
+
+        const index =
+            themes.indexOf(savedTheme);
+
+        if (index !== -1) {
+
+            currentTheme = index;
+
+            document.body.classList.add(
+                savedTheme
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BURGERMENÜ
+    ===================================================== */
+
+    menuButton.addEventListener("click", () => {
+
+        sideMenu.classList.toggle("open");
+
+    });
+
+
+    /* =====================================================
+       STATISTIK
+    ===================================================== */
+
+    document
+        .getElementById("statisticsButton")
+        .addEventListener("click", () => {
+
+            alert(
+                "Die vollständige Statistik kommt im nächsten Schritt."
+            );
+
+        });
+
+
+    document
+        .getElementById("statisticsMenu")
+        .addEventListener("click", () => {
+
+            alert(
+                "Die Statistik kommt im nächsten Schritt."
+            );
+
+        });
+
+
+    document
+        .getElementById("dashboardMenu")
+        .addEventListener("click", () => {
+
+            sideMenu.classList.remove("open");
+
+        });
+
+
+    /* =====================================================
+       LOGOUT
+    ===================================================== */
+
+    document
+        .getElementById("logoutButton")
+        .addEventListener("click", () => {
+
+            /*
+             * Hier schließen wir anschließend
+             * Firebase Authentication an.
+             */
+
+            window.location.href =
+                "login.html";
+
+        });
+
+
+    /* =====================================================
+       FACH-STATISTIK
+    ===================================================== */
+
+    const subjectList =
+        document.getElementById("subjectList");
+
+
+    const demoProgress = {
+
+        "Java": 72,
+
+        "Datenbanken": 48,
+
+        "Webentwicklung": 81
+
+    };
+
+
+    Object.keys(learningData).forEach(subject => {
+
+        const percentage =
+            demoProgress[subject] ?? 0;
+
+
+        const subjectElement =
+            document.createElement("div");
+
+        subjectElement.className =
+            "subject";
+
+
+        subjectElement.innerHTML = `
+
+            <div class="subject-header">
+
+                <span class="subject-name">
+                    ${subject}
+                </span>
+
+                <span class="percentage">
+                    ${percentage} %
+                </span>
+
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    style="width: ${percentage}%">
+                </div>
+
+            </div>
+
+        `;
+
+
+        subjectElement.addEventListener(
+            "click",
+            () => {
+
+                subjectSelect.value =
+                    subject;
+
+                subjectSelect.dispatchEvent(
+                    new Event("change")
+                );
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+            }
+        );
+
+
+        subjectList.appendChild(
+            subjectElement
+        );
+
+    });
+
+</script>
+
+</body>
+</html>
